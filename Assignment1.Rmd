@@ -1,0 +1,91 @@
+---
+title: "Assignment1"
+author: "Kirram"
+date: "October 17, 2015"
+output: html_document
+---
+
+This report was produced to represent answers to the questions in the Peer Assessment 1 of Reproducible Research Class.
+
+Libraries required:
+
+```{r, echo=TRUE}
+  library(ggplot2)
+  library(plyr)
+```
+
+1.  Loading and preprocessing the data
+
+    Show any code that is needed to
+
+    Load the data (i.e. read.csv())
+
+```{r, echo=TRUE}
+  data1<-read.csv("activity.csv")
+```
+
+
+    Process/transform the data (if necessary) into a format suitable for your analysis
+    
+    For question 1, we need to sum up numbers of steps for each day:
+    
+```{r, echo=TRUE}
+  data_q1<-ddply(data1, .(date),summarise, SumSteps=sum(steps))
+
+```
+    
+    For question 2, we need to average numbers of steps for each interval:
+
+```{r, echo=TRUE}
+  data_q2<-ddply(data1, .(interval), summarise, Mean=mean(steps, na.rm = TRUE)) 
+
+```
+
+Q1. What is mean total number of steps taken per day?
+
+    For this part of the assignment, you can ignore the missing values in the dataset.
+    
+    Make a histogram of the total number of steps taken each day
+    
+    
+```{r, echo=TRUE}
+  q1<-ggplot(data_q1, aes(x=date, y=SumSteps))+geom_histogram(stat = "identity")
+  q1
+```
+
+    Calculate and report the mean and median total number of steps taken per day
+Mean: 
+
+```{r, echo=TRUE}
+mean_q1<-mean(data_q1$SumSteps, na.rm = TRUE)
+mean_q1
+```
+
+Median:
+```{r,echo=TRUE}
+median_q1<-median(data_q1$SumSteps, na.rm=TRUE)
+median_q1
+```
+
+
+
+Q2. What is the average daily activity pattern?
+
+  Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average      number of steps taken, averaged across all days (y-axis)
+```{r, echo=TRUE}
+  q2<-ggplot(data_q2)+geom_freqpoly(aes(x=interval,y=Mean), stat="identity")  
+  q2
+```
+  
+  Which 5-minute interval, on average across all the days in the dataset, contains the maximum     number of steps?
+
+```{r, echo=TRUE}
+
+  data_q2_sorted<-arrange(data_q2, by=Mean, decreasing=TRUE)
+  data_q2_max<-data_q2_sorted[1:1,]
+  data_q2_max
+```
+
+
+
+
